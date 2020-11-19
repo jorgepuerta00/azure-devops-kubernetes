@@ -17,6 +17,6 @@ jobs:
   - task: DotNetCoreInstaller@0
     inputs:
       packageType: sdk
-      version: '2.x'
+      version: '2.2.401'
   - script: dotnet build ./SeekQ.sln
     displayName: 'dotnet build'
