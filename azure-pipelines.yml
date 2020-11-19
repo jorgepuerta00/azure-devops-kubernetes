@@ -4,7 +4,7 @@
 # https://aka.ms/yaml
 
 trigger:
-- main
+- dev
 
 pool:
   vmImage: 'ubuntu-latest'
@@ -12,15 +12,11 @@ pool:
 # Pipelines > Stages > Jobs > Tasks(Steps)
 
 jobs:
-- job: Job1
+- job: Linux
   steps:
-  - script: echo Job1!
-    displayName: 'Run a one-line script'
-  - script: |
-      echo Add other tasks to build, test, and deploy your project.
-      echo See https://aka.ms/yaml
-    displayName: 'Run a multi-line script'
-- job: Job2
-  steps:
-  - script: echo Job2!
-    displayName: 'Run a one-line script'
+  - task: DotNetCoreInstaller@0
+    inputs:
+      packageType: sdk
+      version: '3.1'
+  - script: dotnet build ./SeekQ.sln
+    displayName: 'dotnet build'
