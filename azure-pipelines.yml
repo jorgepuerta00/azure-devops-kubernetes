@@ -9,14 +9,26 @@ trigger:
 pool:
   vmImage: 'ubuntu-latest'
 
-# Pipelines > Stages > Jobs > Tasks(Steps)
+variables:
+  buildConfiguration: 'Release'
 
-jobs:
-- job: Linux
-  steps:
-  - task: DotNetCoreInstaller@0
-    inputs:
-      packageType: sdk
-      version: 5.0.x
-  - script: dotnet build ./SeekQ.sln
-    displayName: 'dotnet build'
+steps:
+- task: DotNetCoreCLI@2
+  inputs:
+    command: 'restore'
+    projects: '**/*.csproj'
+  displayName: 'Restore Nuget Packages'
+ 
+- task: DotNetCoreCLI@2
+  inputs:
+    command: 'build'
+    projects: '**/*.csproj'
+    arguments: '--no-restore'
+  displayName: 'Build projects'
+ 
+- task: DotNetCoreCLI@2
+  inputs:
+    command: 'test'
+    projects: '**/*Test.csproj'
+    arguments: '--no-restore'
+  displayName: 'Run Tests'
