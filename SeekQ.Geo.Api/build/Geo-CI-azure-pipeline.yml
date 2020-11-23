@@ -1,4 +1,4 @@
-name : GateWayApi-CI
+name : GeoApi-CI
 trigger:
   branches:
     include:
