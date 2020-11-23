@@ -1,4 +1,4 @@
-name : GateWayApi-CI
+name : UserAssetsApi-CI
 trigger:
   branches:
     include:
