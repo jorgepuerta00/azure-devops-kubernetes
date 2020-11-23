@@ -5,7 +5,7 @@ trigger:
       - main
   paths:
     include:
-      - azure-devops-kubernetes/*
+      - SeekQ.Api.Gateway.BFF/*
 
 pool:
   vmImage: 'ubuntu-latest'
@@ -25,7 +25,7 @@ stages:
         containerregistrytype: 'Container Registry'
         dockerRegistryEndpoint: 'Docker Hub'
         command: 'Build an image'
-        dockerFile: '**/azure-devops-kubernetes/SeekQ.Api.Gateway.BFF/Dockerfile'
+        dockerFile: '**/SeekQ.Api.Gateway.BFF/Dockerfile'
         arguments: '--build-arg BuildId=$(Build.BuildId)'
         imageName: '$(ImageName)'
         useDefaultContext: false
