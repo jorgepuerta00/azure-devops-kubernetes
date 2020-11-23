@@ -1,0 +1,56 @@
+name : GateWayApi-CI
+trigger:
+  branches:
+    include:
+      - main
+  paths:
+    include:
+      - SeekQ.UserAssets.Api/*
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  ImageName: 'jorgepuerta00/userassetsapi:$(Build.BuildId)'
+
+stages:
+- stage: Build
+  displayName: Build image
+  jobs:  
+  - job: Build
+    displayName: Build and push Docker image
+    steps:
+    - task: Docker@1      
+      inputs:
+        containerregistrytype: 'Container Registry'
+        dockerRegistryEndpoint: 'Docker Hub'
+        command: 'Build an image'
+        dockerFile: '**/SeekQ.UserAssets.Api/Dockerfile'
+        arguments: '--build-arg BuildId=$(Build.BuildId)'
+        imageName: '$(ImageName)'
+        useDefaultContext: false
+        buildContext: 'SeekQ.UserAssets.Api'
+      displayName: 'Build the Docker image'
+
+    - pwsh: |
+       $id=docker images --filter "label=test=$(Build.BuildId)" -q | Select-Object -First 1
+       docker create --name testcontainer $id
+       docker cp testcontainer:/testresults ./testresults
+       docker rm testcontainer
+      displayName: 'Copy test results' 
+    
+    - task: PublishTestResults@2
+      inputs:
+        testResultsFormat: 'VSTest'
+        testResultsFiles: '**/*.trx'
+        searchFolder: '$(System.DefaultWorkingDirectory)/testresults'
+      displayName: 'Publish test results'
+
+    - task: Docker@1      
+      inputs:
+        containerregistrytype: 'Container Registry'
+        dockerRegistryEndpoint: 'Docker Hub'
+        command: 'Push an image'
+        imageName: '$(ImageName)'
+      condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+      displayName: 'Push the Docker image to Dockerhub'
