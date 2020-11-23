@@ -25,7 +25,7 @@ stages:
         containerregistrytype: 'Container Registry'
         dockerRegistryEndpoint: 'Docker Hub'
         command: 'Build an image'
-        dockerFile: '**/Dockerfile'
+        dockerFile: '**/SeekQ.Api.Gateway.BFF/Dockerfile'
         imageName: '$(ImageName)'
         useDefaultContext: false
         buildContext: 'SeekQ.Api.Gateway.BFF'
