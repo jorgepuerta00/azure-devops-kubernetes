@@ -19,24 +19,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SeekQ.UserAssets.Api.Test",
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{FD901316-E295-4D56-9572-1E0C740F98C2}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{D950804D-D613-45FE-BE4E-07221AE84EC8}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "user-assets-api", "user-assets-api", "{40CF7166-A7C7-441F-B871-51EA9396ED05}"
-	ProjectSection(SolutionItems) = preProject
-		build\user-assets-api\azure-devops.yml = build\user-assets-api\azure-devops.yml
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "api-gws", "api-gws", "{C1827ED0-7F32-4E97-9766-6D15ACF8713E}"
-	ProjectSection(SolutionItems) = preProject
-		build\api-gateway\azure-devops.yml = build\api-gateway\azure-devops.yml
-	EndProjectSection
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SeekQ.Geo.Api", "SeekQ.Geo.Api\SeekQ.Geo.Api.csproj", "{5B64CEA1-92AF-4FE1-9447-F43009EBD4DC}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "geo-api", "geo-api", "{DA6FFE8C-22A8-4A81-B89B-ABB8660500AB}"
-	ProjectSection(SolutionItems) = preProject
-		build\geo-api\azure-devops.yml = build\geo-api\azure-devops.yml
-	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -80,9 +63,6 @@ Global
 		{458972B6-804F-4FFB-8414-106459334835} = {089ED9CF-2846-412B-9952-C274F338035C}
 		{B1964223-9FA3-4BEF-BEC4-E00B88F33F35} = {089ED9CF-2846-412B-9952-C274F338035C}
 		{A0524EF2-A56C-437A-8722-74C6F06F7434} = {8D7C5A47-A5DC-4787-B8C7-ACD957BCF54D}
-		{40CF7166-A7C7-441F-B871-51EA9396ED05} = {D950804D-D613-45FE-BE4E-07221AE84EC8}
-		{C1827ED0-7F32-4E97-9766-6D15ACF8713E} = {D950804D-D613-45FE-BE4E-07221AE84EC8}
 		{5B64CEA1-92AF-4FE1-9447-F43009EBD4DC} = {089ED9CF-2846-412B-9952-C274F338035C}
-		{DA6FFE8C-22A8-4A81-B89B-ABB8660500AB} = {D950804D-D613-45FE-BE4E-07221AE84EC8}
 	EndGlobalSection
 EndGlobal
