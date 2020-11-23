@@ -32,3 +32,13 @@ steps:
     projects: '**/*Test.csproj'
     arguments: '--no-restore'
   displayName: 'Run Tests'
+
+- task: DotNetCoreCLI@2
+  inputs:
+    command: 'publish'
+    publishWebProjects: false
+    projects: '**/SeekQ.Api.Gateway.BFF.csproj'
+    arguments: '--configuration $(buildConfiguration) --no-restore'
+    modifyOutputPath: false
+  displayName: 'Publish SeekQ.Api.Gateway.BFF'
+  condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))  
