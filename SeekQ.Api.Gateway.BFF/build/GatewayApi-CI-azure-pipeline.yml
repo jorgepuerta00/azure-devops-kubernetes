@@ -11,7 +11,7 @@ pool:
   vmImage: 'ubuntu-latest'
 
 variables:
-  ImageName: 'wolfgangofner/customerapi:$(Build.BuildId)'
+  ImageName: 'jorgepuerta00/gatewayapi:$(Build.BuildId)'
 
 stages:
 - stage: Build
@@ -29,7 +29,7 @@ stages:
         arguments: '--build-arg BuildId=$(Build.BuildId)'
         imageName: '$(ImageName)'
         useDefaultContext: false
-        buildContext: 'CustomerApi'
+        buildContext: 'SeekQ.Api.Gateway.BFF'
       displayName: 'Build the Docker image'
 
     - pwsh: |
