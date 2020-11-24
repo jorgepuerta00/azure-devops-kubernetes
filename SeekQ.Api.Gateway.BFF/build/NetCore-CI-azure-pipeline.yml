@@ -16,6 +16,7 @@ variables:
   rgName: 'cloud-shell-storage-southcentralus'
   imageName: 'jorgepuerta00/gatewayapi'
   webAppName: 'seekblobwebapp'
+  azureSubscription: 'Service Connection'
 
 stages:
 
@@ -31,7 +32,7 @@ stages:
     - task: AzureResourceGroupDeployment@2
       displayName: 'Azure Deployment:Create Azure Container Registry'
       inputs:
-        azureSubscription: 'Azure subscription'
+        azureSubscription: '$(azureSubscription)'
         resourceGroupName: '$(rgName)'
         location: $(location)
         csmFile: '$(System.DefaultWorkingDirectory)/**/containerRegistry-template.json'
@@ -75,7 +76,7 @@ stages:
     - task: Docker@1
       displayName: 'Build container image'
       inputs:
-        azureSubscriptionEndpoint: 'Azure subscription'
+        azureSubscriptionEndpoint: '$(azureSubscription)'
         azureContainerRegistry: '$(acrHostName)'
         imageName: '$(imageName):$(Build.BuildId)'
         useDefaultContext: false
@@ -85,7 +86,7 @@ stages:
     - task: Docker@1
       displayName: 'Push container image'
       inputs:
-        azureSubscriptionEndpoint: 'Azure subscription'
+        azureSubscriptionEndpoint: '$(azureSubscription)'
         azureContainerRegistry: '$(acrHostName)'
         command: 'Push an image'
         imageName: '$(imageName):$(Build.BuildId)'  
