@@ -1,42 +1,82 @@
-name : UserAssetsApi-CI
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
 trigger:
   branches:
-    include:
-      - dev
-  paths:
-    include:
-      - SeekQ.UserAssets.Api/*
-
-pool:
-  vmImage: 'ubuntu-latest'
+    include: 
+    - main
 
 variables:
-  ImageName: 'jorgepuerta00/userassetsapi:$(Build.BuildId)'
+  buildConfiguration: 'Release'
+  location: 'South Central US'
+  acrHostName: 'seekqcontainer.azurecr.io'
+  acrName: 'seekqcontaineracr'
+  rgName: 'cloud-shell-storage-southcentralus'
+  imageName: 'jorgepuerta00/userassetsapi'
+  webAppName: 'seekblobwebapp'
+  azureSubscription: 'AzureSC'
 
 stages:
-- stage: Build
-  displayName: Build image
-  jobs:  
-  - job: Build
-    displayName: Build and push Docker image
-    steps:
-    - task: Docker@1      
-      inputs:
-        containerregistrytype: 'Container Registry'
-        dockerRegistryEndpoint: 'Docker Hub'
-        command: 'Build an image'
-        dockerFile: '**/SeekQ.UserAssets.Api/Dockerfile'
-        arguments: '--build-arg BuildId=$(Build.BuildId)'
-        imageName: '$(ImageName)'
-        useDefaultContext: false
-        buildContext: 'SeekQ.UserAssets.Api'
-      displayName: 'Build the Docker image'
 
-    - task: Docker@1      
+# Build Stage
+- stage: BuildAndTest
+  jobs:
+  - job: BuildAndTest
+    pool:
+      vmImage: 'Ubuntu-20.04'
+    steps:
+    
+    # Restore dependencies
+    - task: DotNetCoreCLI@2
       inputs:
-        containerregistrytype: 'Container Registry'
-        dockerRegistryEndpoint: 'Docker Hub'
-        command: 'Push an image'
-        imageName: '$(ImageName)'
+        command: 'restore'
+        projects: '**/*.csproj'
+      displayName: 'Restore Nuget Packages'
+    
+    # Build app
+    - task: DotNetCoreCLI@2
+      inputs:
+        command: 'build'
+        projects: '**/*.csproj'
+        arguments: '--no-restore'
+      displayName: 'Build projects'
+
+    # Run unit tests 
+    - task: DotNetCoreCLI@2
+      inputs:
+        command: 'test'
+        projects: '**/*Test.csproj'
+        arguments: '--no-restore'
+      displayName: 'Run Tests'
+
+    # Publish the app
+    - task: DotNetCoreCLI@2
+      inputs:
+        command: 'publish'
+        publishWebProjects: false
+        projects: '**/SeekQ.UserAssets.Api.csproj'
+        arguments: '--configuration $(buildConfiguration) --no-restore'
+        modifyOutputPath: false
+      displayName: 'Publish SeekQ.UserAssets.Api'
       condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
-      displayName: 'Push the Docker image to Dockerhub'
+
+    # Build container image
+    - task: Docker@1
+      displayName: 'Build container image'
+      inputs:
+        azureSubscriptionEndpoint: '$(azureSubscription)'
+        azureContainerRegistry: '$(acrHostName)'
+        imageName: '$(imageName):$(Build.BuildId)'
+        useDefaultContext: false
+        buildContext: '$(System.DefaultWorkingDirectory)'
+
+    # Push container image
+    - task: Docker@1
+      displayName: 'Push container image'
+      inputs:
+        azureSubscriptionEndpoint: '$(azureSubscription)'
+        azureContainerRegistry: '$(acrHostName)'
+        command: 'Push an image'
+        imageName: '$(imageName):$(Build.BuildId)'  

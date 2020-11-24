@@ -4,41 +4,79 @@
 # https://aka.ms/yaml
 
 trigger:
-- dev
-
-pool:
-  vmImage: 'ubuntu-latest'
+  branches:
+    include: 
+    - main
 
 variables:
   buildConfiguration: 'Release'
+  location: 'South Central US'
+  acrHostName: 'seekqcontainer.azurecr.io'
+  acrName: 'seekqcontaineracr'
+  rgName: 'cloud-shell-storage-southcentralus'
+  imageName: 'jorgepuerta00/geoapi'
+  webAppName: 'seekblobwebapp'
+  azureSubscription: 'AzureSC'
 
-steps:
-- task: DotNetCoreCLI@2
-  inputs:
-    command: 'restore'
-    projects: '**/*.csproj'
-  displayName: 'Restore Nuget Packages'
- 
-- task: DotNetCoreCLI@2
-  inputs:
-    command: 'build'
-    projects: '**/*.csproj'
-    arguments: '--no-restore'
-  displayName: 'Build projects'
- 
-- task: DotNetCoreCLI@2
-  inputs:
-    command: 'test'
-    projects: '**/*Test.csproj'
-    arguments: '--no-restore'
-  displayName: 'Run Tests'
+stages:
 
-- task: DotNetCoreCLI@2
-  inputs:
-    command: 'publish'
-    publishWebProjects: false
-    projects: '**/SeekQ.Geo.Api.csproj'
-    arguments: '--configuration $(buildConfiguration) --no-restore'
-    modifyOutputPath: false
-  displayName: 'Publish SeekQ.Geo.Api'
-  condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))  
+# Build Stage
+- stage: BuildAndTest
+  jobs:
+  - job: BuildAndTest
+    pool:
+      vmImage: 'Ubuntu-20.04'
+    steps:
+    
+    # Restore dependencies
+    - task: DotNetCoreCLI@2
+      inputs:
+        command: 'restore'
+        projects: '**/*.csproj'
+      displayName: 'Restore Nuget Packages'
+    
+    # Build app
+    - task: DotNetCoreCLI@2
+      inputs:
+        command: 'build'
+        projects: '**/*.csproj'
+        arguments: '--no-restore'
+      displayName: 'Build projects'
+
+    # Run unit tests 
+    - task: DotNetCoreCLI@2
+      inputs:
+        command: 'test'
+        projects: '**/*Test.csproj'
+        arguments: '--no-restore'
+      displayName: 'Run Tests'
+
+    # Publish the app
+    - task: DotNetCoreCLI@2
+      inputs:
+        command: 'publish'
+        publishWebProjects: false
+        projects: '**/SeekQ.Geo.Api.csproj'
+        arguments: '--configuration $(buildConfiguration) --no-restore'
+        modifyOutputPath: false
+      displayName: 'Publish SeekQ.Geo.Api'
+      condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+
+    # Build container image
+    - task: Docker@1
+      displayName: 'Build container image'
+      inputs:
+        azureSubscriptionEndpoint: '$(azureSubscription)'
+        azureContainerRegistry: '$(acrHostName)'
+        imageName: '$(imageName):$(Build.BuildId)'
+        useDefaultContext: false
+        buildContext: '$(System.DefaultWorkingDirectory)'
+
+    # Push container image
+    - task: Docker@1
+      displayName: 'Push container image'
+      inputs:
+        azureSubscriptionEndpoint: '$(azureSubscription)'
+        azureContainerRegistry: '$(acrHostName)'
+        command: 'Push an image'
+        imageName: '$(imageName):$(Build.BuildId)'  
