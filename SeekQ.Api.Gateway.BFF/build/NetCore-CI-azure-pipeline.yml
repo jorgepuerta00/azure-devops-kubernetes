@@ -79,4 +79,8 @@ stages:
         azureSubscriptionEndpoint: '$(azureSubscription)'
         azureContainerRegistry: '$(acrHostName)'
         command: 'Push an image'
-        imageName: '$(imageName):$(Build.BuildId)'  
+        imageName: '$(imageName):$(Build.BuildId)'
+    
+    # Publish the app as an artifact
+    - publish: $(Build.StagingDirectory)
+      artifact: app
