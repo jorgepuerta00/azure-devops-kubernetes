@@ -27,6 +27,24 @@ stages:
     pool:
       vmImage: 'Ubuntu-20.04'
     steps:
+
+    # Create or update the ACR resource
+    - task: AzureResourceGroupDeployment@2
+      displayName: 'Azure Deployment:Create Azure Container Registry'
+      inputs:
+        azureSubscription: '$(azureSubscription)'
+        resourceGroupName: '$(rgName)'
+        location: $(location)
+        csmFile: '$(System.DefaultWorkingDirectory)/**/containerRegistry-template.json'
+        overrideParameters: '-registryName "$(acrName)" -registryLocation "$(location)" -registrySku standard'
+
+    # Install .NET Core sdk 
+    - task: UseDotNet@2
+      displayName: 'Use .NET Core sdk'
+      inputs:
+        packageType: sdk
+        version: 3.1.x
+        installationPath: $(Agent.ToolsDirectory)/dotnet
     
     # Restore dependencies
     - task: DotNetCoreCLI@2
@@ -80,4 +98,44 @@ stages:
         azureSubscriptionEndpoint: '$(azureSubscription)'
         azureContainerRegistry: '$(acrHostName)'
         command: 'Push an image'
-        imageName: '$(imageName):$(Build.BuildId)'  
+        imageName: '$(imageName):$(Build.BuildId)'
+
+# Copy ARM templates
+    #- task: CopyFiles@2
+    #  displayName: 'Copy ARM templates'
+    #  inputs:
+    #    SourceFolder: ArmTemplates
+    #    TargetFolder: '$(build.artifactstagingdirectory)'
+    
+    # Publish the app as an artifact 
+    - publish: $(Build.StagingDirectory)
+      artifact: app
+
+# Staging release
+- stage: Staging
+  jobs:
+  - job: Release
+    pool:
+      vmImage: 'Ubuntu-20.04'
+    steps:
+    # Don't clone the repo
+    - checkout: none
+
+    # Download the published application artifact
+    - download: current
+      artifact: app
+
+    # Deploy App Service
+    #- task: AzureRmWebAppDeployment@3
+    #  displayName: 'Deploy Azure App Service'
+    #  inputs:
+    #    azureSubscription: '$(azureSubscription)'
+    #    appType: applinux
+    #    WebAppName: $(webAppName)
+    #    DockerNamespace: $(acrHostName)
+    #    DockerRepository: $(webAppName)
+    #    DockerImageTag: '$(Build.BuildId)'
+    #    WebAppUri: webAppUrl
+    #    TakeAppOfflineFlag: true
+    #    UseWebDeploy: true
+    #    RenameFilesFlag: true
