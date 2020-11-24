@@ -101,7 +101,7 @@ stages:
 
     # Copy ARM templates
     #- task: CopyFiles@2
-    #  displayName: 'Copy ARM templates'
+    #  displayName: 'Copy ARM templates to: $(build.artifactstagingdirectory)'
     #  inputs:
     #    SourceFolder: ArmTemplates
     #    TargetFolder: '$(build.artifactstagingdirectory)'
@@ -123,6 +123,16 @@ stages:
     # Download the published application artifact
     - download: current
       artifact: app
+
+    # Create or update Azure App Service
+    - task: AzureResourceGroupDeployment@2
+      displayName: 'Azure Deployment:Create Azure App Service'
+      inputs:
+        azureSubscription: '$(azureSubscription)'
+        resourceGroupName: '$(rgName)'
+        location: '$(location)'
+        csmFile: '$(Pipeline.Workspace)/**/container-webapp-template.json'
+        overrideParameters: '-webAppName $(webAppName) -hostingPlanName $(webAppName) -appInsightsLocation "$(location)" -sku "S1 Standard" -registryName $(acrName) -registryLocation "$(location)" -registrySku standard -imageName $(imageName):$(Build.BuildId)'
 
     # Deploy App Service
     #- task: AzureRmWebAppDeployment@3
