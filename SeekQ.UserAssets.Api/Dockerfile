@@ -8,7 +8,7 @@ EXPOSE 443
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1-buster AS build
 WORKDIR /src
 COPY SeekQ.UserAssets.Api.csproj SeekQ.UserAssets.Api/
-COPY App.Common/App.Common.csproj App.Common/
+COPY ./App.Common/App.Common.csproj App.Common/
 RUN dotnet restore "SeekQ.UserAssets.Api/SeekQ.UserAssets.Api.csproj"
 COPY . .
 WORKDIR "/src/SeekQ.UserAssets.Api"
