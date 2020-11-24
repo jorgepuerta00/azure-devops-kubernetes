@@ -102,9 +102,9 @@ stages:
 
     # Copy ARM templates
     - task: CopyFiles@2
-      displayName: 'Copy ARM templates to: $(build.artifactstagingdirectory)'
+      displayName: 'Copy ARM templates from: $(System.DefaultWorkingDirectory) to: $(Build.ArtifactStagingDirectory)'
       inputs:
-        SourceFolder: '$(System.DefaultWorkingDirectory)/**/ArmTemplates'
+        SourceFolder: 'ArmTemplates'
         TargetFolder: '$(Build.ArtifactStagingDirectory)'
     
     # Publish the app as an artifact
