@@ -12,7 +12,7 @@ variables:
   buildConfiguration: 'Release'
   location: 'South Central US'
   acrHostName: 'seekqcontainer.azurecr.io'
-  acrName: 'seekqcontaineracr'
+  acrName: 'seekblobwebapp'
   rgName: 'cloud-shell-storage-southcentralus'
   imageName: 'jorgepuerta00/gatewayapi'
   webAppName: 'seekblobwebapp'
