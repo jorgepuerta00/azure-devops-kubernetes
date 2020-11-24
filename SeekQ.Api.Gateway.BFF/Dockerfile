@@ -19,8 +19,8 @@ FROM build AS publish
 RUN dotnet publish "SeekQ.Api.Gateway.BFF.csproj" -c Release -o /app/publish
 
 WORKDIR "/src/ArmTemplates"
-COPY /armtemplates/ /app/build
-COPY /armtemplates/ /app/publish
+COPY /ArmTemplates/ /app/build
+COPY /ArmTemplates/ /app/publish
 
 FROM base AS final
 WORKDIR /app
