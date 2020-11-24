@@ -16,7 +16,7 @@ variables:
   rgName: 'cloud-shell-storage-southcentralus'
   imageName: 'jorgepuerta00/gatewayapi'
   webAppName: 'seekblobwebapp'
-  azureSubscription: 'Azure subscription'
+  azureSubscription: 'AzureSC'
 
 stages:
 
