@@ -18,11 +18,9 @@ RUN dotnet build "SeekQ.Api.Gateway.BFF.csproj" -c Release -o /app/build
 FROM build AS publish
 RUN dotnet publish "SeekQ.Api.Gateway.BFF.csproj" -c Release -o /app/publish
 
-WORKDIR "/src/ArmTemplates"
-COPY /ArmTemplates/ /app/build
-COPY /ArmTemplates/ /app/publish
-
 FROM base AS final
 WORKDIR /app
+RUN dir #Added
+RUN pip download -r requirements.txt -d packages
 COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "SeekQ.Api.Gateway.BFF.dll"]
