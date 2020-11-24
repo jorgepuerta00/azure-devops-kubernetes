@@ -70,7 +70,7 @@ stages:
         azureContainerRegistry: '$(acrHostName)'
         imageName: '$(imageName):$(Build.BuildId)'
         useDefaultContext: false
-        buildContext: '$(System.DefaultWorkingDirectory)/SeekQ.UserAssets.Api'
+        buildContext: '$(System.DefaultWorkingDirectory)'
         dockerFile: '**/SeekQ.UserAssets.Api/Dockerfile'
 
     # Push container image
