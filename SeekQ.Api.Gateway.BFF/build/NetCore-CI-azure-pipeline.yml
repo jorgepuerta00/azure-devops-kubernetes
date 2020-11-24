@@ -16,7 +16,7 @@ variables:
   rgName: 'cloud-shell-storage-southcentralus'
   imageName: 'jorgepuerta00/gatewayapi'
   webAppName: 'seekblobwebapp'
-  azureSubscription: 'Service Connection'
+  azureSubscription: 'Azure subscription'
 
 stages:
 
@@ -28,16 +28,6 @@ stages:
       vmImage: 'Ubuntu-20.04'
     steps:
     
-    # Create or update the ACR resource
-    - task: AzureResourceGroupDeployment@2
-      displayName: 'Azure Deployment:Create Azure Container Registry'
-      inputs:
-        azureSubscription: '$(azureSubscription)'
-        resourceGroupName: '$(rgName)'
-        location: $(location)
-        csmFile: '$(System.DefaultWorkingDirectory)/**/containerRegistry-template.json'
-        overrideParameters: '-registryName "$(acrName)" -registryLocation "$(location)" -registrySku standard'
-
     # Restore dependencies
     - task: DotNetCoreCLI@2
       inputs:
