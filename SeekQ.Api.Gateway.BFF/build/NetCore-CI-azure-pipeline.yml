@@ -61,22 +61,3 @@ stages:
         modifyOutputPath: false
       displayName: 'Publish SeekQ.Api.Gateway.BFF'
       condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
-
-    # Build container image
-    - task: Docker@1
-      displayName: 'Build container image'
-      inputs:
-        azureSubscriptionEndpoint: '$(azureSubscription)'
-        azureContainerRegistry: '$(acrHostName)'
-        imageName: '$(imageName):$(Build.BuildId)'
-        useDefaultContext: false
-        buildContext: '$(System.DefaultWorkingDirectory)/PublishedWebApp'
-
-    # Push container image
-    - task: Docker@1
-      displayName: 'Push container image'
-      inputs:
-        azureSubscriptionEndpoint: '$(azureSubscription)'
-        azureContainerRegistry: '$(acrHostName)'
-        command: 'Push an image'
-        imageName: '$(imageName):$(Build.BuildId)'  
