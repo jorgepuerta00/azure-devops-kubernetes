@@ -8,7 +8,7 @@ EXPOSE 443
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1-buster AS build
 WORKDIR /src
 COPY SeekQ.Geo.Api/SeekQ.Geo.Api.csproj SeekQ.Geo.Api/
-#COPY App.Common/App.Common.csproj App.Common/
+COPY App.Common/App.Common.csproj App.Common/
 RUN dotnet restore "SeekQ.Geo.Api/SeekQ.Geo.Api.csproj"
 COPY . .
 WORKDIR "/src/SeekQ.Geo.Api"
