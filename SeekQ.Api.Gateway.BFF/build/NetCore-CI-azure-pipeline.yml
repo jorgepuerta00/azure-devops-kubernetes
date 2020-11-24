@@ -70,7 +70,7 @@ stages:
         azureContainerRegistry: '$(acrHostName)'
         imageName: '$(imageName):$(Build.BuildId)'
         useDefaultContext: false
-        buildContext: '$(System.DefaultWorkingDirectory)/PublishedWebApp'
+        buildContext: '$(System.DefaultWorkingDirectory)'
 
     # Push container image
     - task: Docker@1
