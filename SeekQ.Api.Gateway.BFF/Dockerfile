@@ -7,7 +7,8 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1-buster AS build
 WORKDIR /src
-COPY ArmTemplates/ ArmTemplates/
+COPY containerRegistry-template.json ArmTemplates/
+COPY container-webapp-template.json ArmTemplates/
 COPY SeekQ.Api.Gateway.BFF/SeekQ.Api.Gateway.BFF.csproj SeekQ.Api.Gateway.BFF/
 RUN dotnet restore "SeekQ.Api.Gateway.BFF/SeekQ.Api.Gateway.BFF.csproj"
 COPY . .
