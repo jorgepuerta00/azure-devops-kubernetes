@@ -12,7 +12,7 @@ variables:
   buildConfiguration: 'Release'
   location: 'South Central US'
   acrHostName: 'seekqcontainer.azurecr.io'
-  acrName: 'seekblobwebapp'
+  acrName: 'seekqcontainer'
   rgName: 'cloud-shell-storage-southcentralus'
   imageName: 'jorgepuerta00/gatewayapi'
   webAppName: 'seekblobwebapp'
@@ -27,8 +27,18 @@ stages:
     pool:
       vmImage: 'Ubuntu-20.04'
     steps:
-    
-    # Restore dependencies
+
+    # Create or update the ACR resource
+    - task: AzureResourceGroupDeployment@2
+      displayName: 'Azure Deployment:Create Azure Container Registry'
+      inputs:
+        azureSubscription: '$(azureSubscription)'
+        resourceGroupName: '$(rgName)'
+        location: $(location)
+        csmFile: '$(System.DefaultWorkingDirectory)/**/containerRegistry-template.json'
+        overrideParameters: '-registryName "$(acrName)" -registryLocation "$(location)" -registrySku standard'
+ 
+    # Restore dependencies 
     - task: DotNetCoreCLI@2
       inputs:
         command: 'restore'
@@ -51,7 +61,7 @@ stages:
         arguments: '--no-restore'
       displayName: 'Run Tests'
 
-    # Publish the app
+    # Publish the app  
     - task: DotNetCoreCLI@2
       inputs:
         command: 'publish'
@@ -80,6 +90,13 @@ stages:
         azureContainerRegistry: '$(acrHostName)'
         command: 'Push an image'
         imageName: '$(imageName):$(Build.BuildId)'
+
+    # Copy ARM templates
+    - task: CopyFiles@2
+      displayName: 'Copy ARM templates'
+      inputs:
+        SourceFolder: ArmTemplates
+        TargetFolder: '$(build.artifactstagingdirectory)'
     
     # Publish the app as an artifact
     - publish: $(Build.StagingDirectory)
@@ -100,16 +117,16 @@ stages:
       artifact: app
 
     # Deploy App Service
-    - task: AzureRmWebAppDeployment@3
-      displayName: 'Deploy Azure App Service'
-      inputs:
-        azureSubscription: '$(azureSubscription)'
-        appType: applinux
-        WebAppName: $(webAppName)
-        DockerNamespace: $(acrHostName)
-        DockerRepository: $(webAppName)
-        DockerImageTag: '$(Build.BuildId)'
-        WebAppUri: webAppUrl
-        TakeAppOfflineFlag: true
-        UseWebDeploy: true
-        RenameFilesFlag: true
+    #- task: AzureRmWebAppDeployment@3
+    #  displayName: 'Deploy Azure App Service'
+    #  inputs:
+    #    azureSubscription: '$(azureSubscription)'
+    #    appType: applinux
+    #    WebAppName: $(webAppName)
+    #    DockerNamespace: $(acrHostName)
+    #    DockerRepository: $(webAppName)
+    #    DockerImageTag: '$(Build.BuildId)'
+    #    WebAppUri: webAppUrl
+    #    TakeAppOfflineFlag: true
+    #    UseWebDeploy: true
+    #    RenameFilesFlag: true
