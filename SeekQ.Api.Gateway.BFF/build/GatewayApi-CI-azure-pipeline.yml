@@ -2,7 +2,7 @@ name : GateWayApi-CI
 trigger:
   branches:
     include:
-      - main
+      - dev
   paths:
     include:
       - SeekQ.Api.Gateway.BFF/*
