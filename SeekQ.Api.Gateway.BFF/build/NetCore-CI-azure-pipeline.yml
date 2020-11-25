@@ -16,6 +16,7 @@ variables:
   rgName: 'seekqcontaineracr-rg'
   imageName: 'gatewayapi'
   webAppName: 'seekgatewayapi'
+  hostingPlanName: 'seekappserviceplan'
   azureSubscription: 'AzureSC'
 
 stages:
@@ -133,7 +134,7 @@ stages:
         resourceGroupName: '$(rgName)'
         location: '$(location)'
         csmFile: '$(Pipeline.Workspace)/**/container-webapp-template.json'
-        overrideParameters: '-webAppName $(webAppName) -hostingPlanName $(webAppName) -appInsightsLocation "$(location)" -sku "S1 Standard" -registryName $(acrName) -registryLocation "$(location)" -registrySku standard -imageName $(imageName):$(Build.BuildId)'
+        overrideParameters: '-webAppName $(webAppName) -hostingPlanName $(hostingPlanName) -appInsightsLocation "$(location)" -sku "S1 Standard" -registryName $(acrName) -registryLocation "$(location)" -registrySku standard -imageName $(imageName):$(Build.BuildId)'
 
     # Deploy App Service
     - task: AzureRmWebAppDeployment@3
