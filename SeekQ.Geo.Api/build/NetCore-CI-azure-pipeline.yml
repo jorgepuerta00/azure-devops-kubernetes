@@ -10,10 +10,10 @@ trigger:
 
 variables:
   buildConfiguration: 'Release'
-  location: 'South Central US'
+  location: 'East US'
   acrHostName: 'seekqcontaineracr.azurecr.io'
   acrName: 'seekqcontaineracr'
-  rgName: 'cloud-shell-storage-southcentralus'
+  rgName: 'seekqcontaineracr-rg'
   imageName: 'geoapi'
   webAppName: 'seekgeoapi'
   azureSubscription: 'AzureSC'
