@@ -20,7 +20,5 @@ RUN dotnet publish "SeekQ.Api.Gateway.BFF.csproj" -c Release -o /app/publish
 
 FROM base AS final
 WORKDIR /app
-RUN dir #Added
-RUN pip download -r requirements.txt -d packages
 COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "SeekQ.Api.Gateway.BFF.dll"]
