@@ -104,6 +104,7 @@ stages:
     - task: CopyFiles@2
       displayName: 'Copy ARM templates'
       inputs:
+        Contents: '**template.json*'
         TargetFolder: '$(Build.ArtifactStagingDirectory)'
     
     # Publish the app as an artifact
